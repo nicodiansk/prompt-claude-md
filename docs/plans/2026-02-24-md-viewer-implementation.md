@@ -55,6 +55,11 @@
 | 34 | Add window state persistence | Done | `fea7ffe` |
 | 35 | Add dirty indicator test for status bar | Done | `0e20553` |
 | 36 | Phase 4 verification and merge to develop | Done | `2cf7961` |
+| 37 | Add Mermaid diagram support (TDD) | Done | `1148140` |
+| 38 | Add KaTeX math rendering (TDD) | Done | `04fe359` |
+| 39 | CSP update for mermaid | Done | `7035dd2` |
+| 40 | Fix mermaid rendering on React re-render | Done | `4aa0cb4` |
+| 41 | Phase 5 verification and merge to develop | In Progress | — |
 
 **Notes:**
 - npm `script-shell` set to Git Bash globally (`~/.npmrc`) to fix nvm4w symlink issues on Windows
