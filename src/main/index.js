@@ -5,6 +5,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import { join, resolve, basename } from 'path'
 import { watch } from 'fs'
 import { readFileContent, writeFileContent } from './fileOps.js'
+import windowStateKeeper from 'electron-window-state'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -24,9 +25,16 @@ function parseFilePath() {
 function createWindow() {
   const title = filePath ? `${basename(filePath)} — MD Viewer` : 'MD Viewer'
 
+  const windowState = windowStateKeeper({
+    defaultWidth: 1200,
+    defaultHeight: 800
+  })
+
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    x: windowState.x,
+    y: windowState.y,
+    width: windowState.width,
+    height: windowState.height,
     title,
     autoHideMenuBar: true,
     webPreferences: {
@@ -35,6 +43,8 @@ function createWindow() {
       nodeIntegration: false
     }
   })
+
+  windowState.manage(mainWindow)
 
   if (isDev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
