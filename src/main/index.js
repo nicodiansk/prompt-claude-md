@@ -3,6 +3,7 @@
 
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { join, resolve, basename } from 'path'
+import { watch } from 'fs'
 import { readFileContent, writeFileContent } from './fileOps.js'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -56,10 +57,34 @@ function registerIpcHandlers() {
   })
 }
 
+function startFileWatcher() {
+  if (!filePath) return
+
+  let debounceTimer = null
+
+  watch(filePath, (eventType) => {
+    if (eventType !== 'change') return
+
+    // Debounce to avoid rapid-fire events
+    if (debounceTimer) clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(async () => {
+      try {
+        const content = await readFileContent(filePath)
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          mainWindow.webContents.send('file-changed', content)
+        }
+      } catch {
+        // File may be temporarily unavailable during write
+      }
+    }, 100)
+  })
+}
+
 app.whenReady().then(() => {
   filePath = parseFilePath()
   registerIpcHandlers()
   createWindow()
+  startFileWatcher()
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
