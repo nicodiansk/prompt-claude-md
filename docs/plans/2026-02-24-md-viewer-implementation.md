@@ -35,6 +35,15 @@
 | 14 | Add preview styles and code highlighting | Done | `44db9af` |
 | 15 | Add Magic UI elements to shell | Done | `169a86a` |
 | 16 | Phase 1 verification and merge to develop | Done | `efeb306` |
+| 17 | Create feature branch | Done | — |
+| 18 | Add IPC file read/write handlers (TDD) | Done | `c6e1c1e` |
+| 19 | Wire IPC handlers into main process | Done | `a5c55a1` |
+| 20 | Expand preload API | Done | `ba103e1` |
+| 21 | Create useDebounce hook (TDD) | Done | `4571da1` |
+| 22 | Create useFile hook | Done | `5aa3994` |
+| 23 | Add file watching to main process | Done | `a47c182` |
+| 24 | Integrate useFile into App | Done | `bf269d4` |
+| 25 | Phase 2 verification and merge to develop | Done | `e4379f1` |
 
 **Notes:**
 - npm `script-shell` set to Git Bash globally (`~/.npmrc`) to fix nvm4w symlink issues on Windows
