@@ -3,11 +3,12 @@
 
 import { cn } from '@/lib/utils'
 
-export default function StatusBar({ filename, wordCount, mode }) {
+export default function StatusBar({ filename, wordCount, mode, saveStatus }) {
   return (
     <div className="h-6 bg-surface border-t border-border px-3 flex items-center justify-between text-xs text-text-muted select-none">
       <div className="flex items-center gap-3">
         <span>{filename}</span>
+        {saveStatus === 'saved' && <span className="text-accent">Saved</span>}
         <span>{wordCount} words</span>
       </div>
       <div>

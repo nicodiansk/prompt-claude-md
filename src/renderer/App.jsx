@@ -14,7 +14,7 @@ function countWords(text) {
 }
 
 export default function App() {
-  const { content, filename, hasFile, dirty, handleChange, forceSave, openFile } = useFile()
+  const { content, filename, hasFile, dirty, saveStatus, handleChange, forceSave, openFile } = useFile()
   const [mode, setMode] = useState('edit')
   const editorRef = useRef(null)
   const previewRef = useRef(null)
@@ -84,6 +84,7 @@ export default function App() {
         filename={dirty ? `${filename} *` : filename}
         wordCount={countWords(content)}
         mode={mode}
+        saveStatus={saveStatus}
       />
     </div>
   )

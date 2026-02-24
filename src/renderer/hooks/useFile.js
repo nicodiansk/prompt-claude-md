@@ -8,13 +8,18 @@ export function useFile() {
   const [content, setContent] = useState('')
   const [filename, setFilename] = useState(null)
   const [dirty, setDirty] = useState(false)
+  const [saveStatus, setSaveStatus] = useState(null)
   const lastSavedRef = useRef('')
+  const saveStatusTimerRef = useRef(null)
 
   const saveToFile = useCallback(async (text) => {
     if (!window.api || !filename) return
     await window.api.writeFile(text)
     lastSavedRef.current = text
     setDirty(false)
+    setSaveStatus('saved')
+    if (saveStatusTimerRef.current) clearTimeout(saveStatusTimerRef.current)
+    saveStatusTimerRef.current = setTimeout(() => setSaveStatus(null), 2000)
   }, [filename])
 
   const { trigger: debouncedSave, flush: flushSave } = useDebounce(saveToFile, 500)
@@ -56,6 +61,7 @@ export function useFile() {
   const handleChange = useCallback((newContent) => {
     setContent(newContent)
     setDirty(true)
+    setSaveStatus(null)
     debouncedSave(newContent)
   }, [debouncedSave])
 
@@ -84,6 +90,7 @@ export function useFile() {
     filename,
     hasFile: filename !== null,
     dirty,
+    saveStatus,
     handleChange,
     forceSave,
     openFile

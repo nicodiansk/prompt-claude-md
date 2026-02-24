@@ -30,4 +30,14 @@ describe('StatusBar', () => {
     render(<StatusBar filename="notes.md *" wordCount={10} mode="edit" />)
     expect(screen.getByText('notes.md *')).toBeTruthy()
   })
+
+  it('shows saved indicator when saveStatus is saved', () => {
+    render(<StatusBar filename="notes.md" wordCount={10} mode="edit" saveStatus="saved" />)
+    expect(screen.getByText(/saved/i)).toBeTruthy()
+  })
+
+  it('does not show saved indicator when saveStatus is null', () => {
+    render(<StatusBar filename="notes.md" wordCount={10} mode="edit" saveStatus={null} />)
+    expect(screen.queryByText(/saved/i)).toBeNull()
+  })
 })
