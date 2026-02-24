@@ -1,7 +1,7 @@
 // ABOUTME: Root application component. Manages layout mode and top-level state.
 // ABOUTME: Renders the split-pane editor/preview layout with status bar.
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Editor from './components/Editor'
 import Preview from './components/Preview'
 import StatusBar from './components/StatusBar'
@@ -15,6 +15,18 @@ function countWords(text) {
 export default function App() {
   const { content, filename, dirty, handleChange, forceSave } = useFile()
   const [mode, setMode] = useState('edit')
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault()
+        forceSave()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [forceSave])
 
   return (
     <div className="flex flex-col h-screen bg-background text-text">
