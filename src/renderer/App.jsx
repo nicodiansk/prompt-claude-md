@@ -18,9 +18,13 @@ export default function App() {
 
   useEffect(() => {
     function handleKeyDown(e) {
-      if (e.ctrlKey && e.key === 's') {
+      if (e.ctrlKey && !e.shiftKey && e.key === 's') {
         e.preventDefault()
         forceSave()
+      }
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault()
+        setMode(prev => prev === 'edit' ? 'preview' : 'edit')
       }
     }
 
