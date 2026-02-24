@@ -30,6 +30,29 @@ body {
   flex-direction: column;
 }
 
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--color-background);
+}
+
 @keyframes shine-border {
   0% { background-position: 0% 0%; }
   50% { background-position: 100% 100%; }

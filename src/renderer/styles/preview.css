@@ -79,10 +79,24 @@
   font-weight: 600;
 }
 
-[data-testid="preview"] ul,
+[data-testid="preview"] ul {
+  padding-left: 1.5em;
+  margin: 0.75em 0;
+  list-style-type: disc;
+}
+
 [data-testid="preview"] ol {
   padding-left: 1.5em;
   margin: 0.75em 0;
+  list-style-type: decimal;
+}
+
+[data-testid="preview"] ul ul {
+  list-style-type: circle;
+}
+
+[data-testid="preview"] ul ul ul {
+  list-style-type: square;
 }
 
 [data-testid="preview"] li {
