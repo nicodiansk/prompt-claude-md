@@ -1,0 +1,119 @@
+/* ABOUTME: Styles for the markdown preview pane's rendered HTML content. */
+/* ABOUTME: Covers typography, code blocks, tables, and task lists. */
+
+/* highlight.js theme — import a dark theme */
+@import 'highlight.js/styles/tokyo-night-dark.css';
+
+/* Preview pane rendered content */
+[data-testid="preview"] h1 {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0.67em 0;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+[data-testid="preview"] h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 0.83em 0;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+[data-testid="preview"] h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin: 1em 0;
+}
+
+[data-testid="preview"] p {
+  margin: 0.75em 0;
+  line-height: 1.6;
+}
+
+[data-testid="preview"] a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+[data-testid="preview"] a:hover {
+  text-decoration: underline;
+}
+
+[data-testid="preview"] pre {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+[data-testid="preview"] code {
+  font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+[data-testid="preview"] :not(pre) > code {
+  background: var(--color-surface-bright);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+}
+
+[data-testid="preview"] table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+[data-testid="preview"] th,
+[data-testid="preview"] td {
+  border: 1px solid var(--color-border);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+[data-testid="preview"] th {
+  background: var(--color-surface);
+  font-weight: 600;
+}
+
+[data-testid="preview"] ul,
+[data-testid="preview"] ol {
+  padding-left: 1.5em;
+  margin: 0.75em 0;
+}
+
+[data-testid="preview"] li {
+  margin: 0.25em 0;
+  line-height: 1.6;
+}
+
+[data-testid="preview"] blockquote {
+  border-left: 3px solid var(--color-accent-dim);
+  padding-left: 1em;
+  margin: 1em 0;
+  color: var(--color-text-muted);
+}
+
+[data-testid="preview"] hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 1.5em 0;
+}
+
+[data-testid="preview"] img {
+  max-width: 100%;
+  border-radius: 4px;
+}
+
+/* Task list checkboxes */
+[data-testid="preview"] .task-list-item {
+  list-style: none;
+  margin-left: -1.5em;
+}
+
+[data-testid="preview"] .task-list-item input[type="checkbox"] {
+  margin-right: 0.5em;
+}
