@@ -80,21 +80,34 @@ function startFileWatcher() {
   })
 }
 
-app.whenReady().then(() => {
-  filePath = parseFilePath()
-  registerIpcHandlers()
-  createWindow()
-  startFileWatcher()
+const gotTheLock = app.requestSingleInstanceLock()
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
     }
   })
-})
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+  app.whenReady().then(() => {
+    filePath = parseFilePath()
+    registerIpcHandlers()
+    createWindow()
+    startFileWatcher()
+
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow()
+      }
+    })
+  })
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  })
+}
