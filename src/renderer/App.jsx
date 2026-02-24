@@ -1,42 +1,11 @@
 // ABOUTME: Root application component. Manages layout mode and top-level state.
 // ABOUTME: Renders the split-pane editor/preview layout with status bar.
 
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import Editor from './components/Editor'
 import Preview from './components/Preview'
 import StatusBar from './components/StatusBar'
-
-const SAMPLE_CONTENT = `# Welcome to MD Viewer
-
-This is a **live preview** markdown editor.
-
-## Features
-
-- Split pane editing
-- Syntax highlighting
-- GFM support (tables, ~~strikethrough~~, task lists)
-
-### Code Example
-
-\`\`\`js
-function greet(name) {
-  return \`Hello, \${name}!\`
-}
-\`\`\`
-
-### Table
-
-| Feature | Status |
-|---------|--------|
-| Editor | Working |
-| Preview | Working |
-
-### Task List
-
-- [x] Editor component
-- [x] Preview component
-- [ ] File operations
-`
+import { useFile } from './hooks/useFile'
 
 function countWords(text) {
   if (!text.trim()) return 0
@@ -44,12 +13,8 @@ function countWords(text) {
 }
 
 export default function App() {
-  const [content, setContent] = useState(SAMPLE_CONTENT)
-  const [mode, setMode] = useState('edit') // 'edit' or 'preview'
-
-  const handleChange = useCallback((newContent) => {
-    setContent(newContent)
-  }, [])
+  const { content, filename, dirty, handleChange, forceSave } = useFile()
+  const [mode, setMode] = useState('edit')
 
   return (
     <div className="flex flex-col h-screen bg-background text-text">
@@ -64,7 +29,7 @@ export default function App() {
         </div>
       </div>
       <StatusBar
-        filename="untitled.md"
+        filename={dirty ? `${filename} *` : filename}
         wordCount={countWords(content)}
         mode={mode}
       />

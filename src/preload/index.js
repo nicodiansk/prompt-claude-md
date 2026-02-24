@@ -1,8 +1,15 @@
 // ABOUTME: Preload script that bridges main and renderer processes.
 // ABOUTME: Exposes a safe API via contextBridge for file operations and IPC.
 
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('api', {
-  // File operations will be added in Phase 2
+  getFilePath: () => ipcRenderer.invoke('get-file-path'),
+  readFile: () => ipcRenderer.invoke('read-file'),
+  writeFile: (content) => ipcRenderer.invoke('write-file', content),
+  onFileChanged: (callback) => {
+    const handler = (_event, content) => callback(content)
+    ipcRenderer.on('file-changed', handler)
+    return () => ipcRenderer.removeListener('file-changed', handler)
+  }
 })
