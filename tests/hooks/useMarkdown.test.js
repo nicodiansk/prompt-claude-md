@@ -43,4 +43,22 @@ describe('renderMarkdown', () => {
   it('returns empty string for empty input', () => {
     expect(renderMarkdown('')).toBe('')
   })
+
+  it('renders inline math with KaTeX', () => {
+    const html = renderMarkdown('The equation $E=mc^2$ is famous.')
+    expect(html).toContain('katex')
+    expect(html).not.toContain('$E=mc^2$')
+  })
+
+  it('renders display math with KaTeX', () => {
+    const html = renderMarkdown('$$\\sum_{i=1}^n i = \\frac{n(n+1)}{2}$$')
+    expect(html).toContain('katex')
+    expect(html).toContain('display')
+  })
+
+  it('does not affect text without math delimiters', () => {
+    const html = renderMarkdown('Just a normal paragraph.')
+    expect(html).not.toContain('katex')
+    expect(html).toContain('<p>Just a normal paragraph.</p>')
+  })
 })

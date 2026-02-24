@@ -4,6 +4,8 @@
 import markdownit from 'markdown-it'
 import hljs from 'highlight.js'
 import taskLists from 'markdown-it-task-lists'
+import texmath from 'markdown-it-texmath'
+import katex from 'katex'
 
 const md = markdownit({
   html: true,
@@ -23,6 +25,7 @@ const md = markdownit({
 
 md.enable(['table', 'strikethrough'])
 md.use(taskLists)
+md.use(texmath, { engine: katex, delimiters: 'dollars' })
 
 export function renderMarkdown(source) {
   if (!source) return ''
