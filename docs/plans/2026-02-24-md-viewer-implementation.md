@@ -15,6 +15,34 @@
 
 ---
 
+## Progress
+
+| Task | Description | Status | Commit |
+|------|-------------|--------|--------|
+| 1 | Initialize project and install dependencies | Done | `30450e1` |
+| 2 | Configure electron-vite | Pending | |
+| 3 | Set up Tailwind CSS v4 | Pending | |
+| 4 | Set up Magic UI utilities | Pending | |
+| 5 | Configure Vitest | Pending | |
+| 6 | Create Electron main process skeleton | Pending | |
+| 7 | Create preload script | Pending | |
+| 8 | Create React entry point | Pending | |
+| 9 | Create useMarkdown hook (TDD) | Pending | |
+| 10 | Create Preview component (TDD) | Pending | |
+| 11 | Create Editor component (TDD) | Pending | |
+| 12 | Create StatusBar component (TDD) | Pending | |
+| 13 | Wire up live editor-to-preview rendering | Pending | |
+| 14 | Add preview styles and code highlighting | Pending | |
+| 15 | Add Magic UI elements to shell | Pending | |
+| 16 | Phase 1 verification and merge to develop | Pending | |
+
+**Notes:**
+- npm `script-shell` set to Git Bash globally (`~/.npmrc`) to fix nvm4w symlink issues on Windows
+- Node v20.19.6 — @electron/rebuild warns about wanting Node >= 22.12.0 (non-blocking)
+- Using subagent-driven development for task execution
+
+---
+
 ## Branch Strategy
 
 Each phase maps to a feature branch off `develop`. Merge to `develop` when phase is complete.
