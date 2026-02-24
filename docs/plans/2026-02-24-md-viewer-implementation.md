@@ -44,6 +44,10 @@
 | 23 | Add file watching to main process | Done | `a47c182` |
 | 24 | Integrate useFile into App | Done | `bf269d4` |
 | 25 | Phase 2 verification and merge to develop | Done | `e4379f1` |
+| 26 | Create feature branch | Done | — |
+| 27 | Add CLI launcher script | Done | `68e9800` |
+| 28 | Add single instance lock | Done | `dc52123` |
+| 29 | Phase 3 verification and merge to develop | Done | `46a97da` |
 
 **Notes:**
 - npm `script-shell` set to Git Bash globally (`~/.npmrc`) to fix nvm4w symlink issues on Windows
