@@ -25,4 +25,9 @@ describe('StatusBar', () => {
     render(<StatusBar filename="test.md" wordCount={0} mode="preview" />)
     expect(screen.getByText(/preview/i)).toBeTruthy()
   })
+
+  it('shows dirty indicator when file has unsaved changes', () => {
+    render(<StatusBar filename="notes.md *" wordCount={10} mode="edit" />)
+    expect(screen.getByText('notes.md *')).toBeTruthy()
+  })
 })
