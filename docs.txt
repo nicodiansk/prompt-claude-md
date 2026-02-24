@@ -1,0 +1,112 @@
+# Prompt: Local Markdown Viewer/Editor with Claude Code Integration
+
+## What to Build
+
+Build a local markdown viewer/editor as a lightweight Electron app (or alternatively a local web server + browser approach) that:
+
+### Core Features
+1. **File Opening** — Accept a markdown file path as a CLI argument: `md-viewer ./notes.md`
+2. **Live Preview** — Split-pane layout: left = raw markdown editor (monospace, syntax-highlighted), right = rendered preview (GitHub-flavored markdown with syntax highlighting for code blocks)
+3. **Auto-save** — Save on every keystroke (debounced ~500ms) back to the original file
+4. **File Watching** — If the file changes on disk (external edit), reload content automatically
+5. **Ctrl+S** — Force save
+6. **Ctrl+Shift+P** — Toggle between edit mode (split pane) and read-only preview (full-width rendered)
+7. **Dark theme by default** — Match a terminal/IDE aesthetic (dark background, soft contrast text)
+8. **Create if missing** — If the file path doesn't exist, create it
+
+### Markdown Rendering
+- GitHub-Flavored Markdown (tables, task lists, strikethrough, footnotes)
+- Syntax-highlighted code blocks (use highlight.js or Shiki)
+- Mermaid diagram rendering
+- LaTeX/math rendering (KaTeX)
+- Clickable links (open in default browser)
+- Image rendering (support local relative paths and URLs)
+
+### Editor Features
+- Line numbers
+- Soft word wrap
+- Basic keyboard shortcuts (Ctrl+Z undo, Ctrl+Shift+Z redo, Ctrl+F find)
+- Tab = 2 spaces
+- Scroll sync between editor and preview
+
+### Tech Stack Preference
+- **Option A (Recommended): Electron** — Single binary, no browser tab clutter, feels native
+  - Use CodeMirror 6 for the editor
+  - Use markdown-it + plugins for rendering
+  - Package with electron-builder
+- **Option B: Local Web Server** — If Electron feels too heavy
+  - Node.js + Express serving on localhost:3377
+  - Same CodeMirror + markdown-it stack
+  - Auto-open browser on launch
+  - CLI: `md-viewer ./notes.md` starts server and opens browser
+
+### Project Structure
+```
+md-viewer/
+├── package.json
+├── src/
+│   ├── main.js          # Electron main process / Express server
+│   ├── preload.js        # Electron preload (if Electron)
+│   ├── renderer/
+│   │   ├── index.html
+│   │   ├── editor.js     # CodeMirror setup
+│   │   ├── preview.js    # Markdown rendering
+│   │   ├── sync.js       # Scroll sync logic
+│   │   └── styles.css    # Dark theme
+│   └── utils/
+│       ├── fileWatcher.js
+│       └── debounce.js
+├── assets/
+│   └── icon.png
+└── README.md
+```
+
+## Claude Code Ctrl+G Integration
+
+After building the app, configure it to be triggered by Ctrl+G in Claude Code on Windows:
+
+### Approach: Claude Code Custom Keybinding / Hook
+
+1. **Check if Claude Code supports custom commands** — Look at `~/.claude/` config files, especially `settings.json` or any keybinding config.
+
+2. **If Claude Code supports custom slash commands or hooks:**
+   - Create a `/notes` or `/edit` command that launches the viewer
+   - Or configure the `notepad` / `notes` command to use our custom viewer
+
+3. **If Ctrl+G can't be directly rebound in Claude Code**, create a workaround:
+   - Use AutoHotkey (Windows) to intercept Ctrl+G when Claude Code's terminal is focused and launch `md-viewer` instead
+   - AHK script:
+     ```ahk
+     #IfWinActive ahk_exe cmd.exe  ; or whatever terminal Claude Code runs in
+     ^g::
+         Run, md-viewer.exe "C:\Users\<you>\.claude\notes.md"
+     return
+     #IfWinActive
+     ```
+
+4. **The notes file location** should default to `~/.claude/notes.md` (or wherever Claude Code stores its notes) so you're editing the same content.
+
+### Installation as Global CLI
+```json
+// In package.json:
+{
+  "bin": {
+    "md-viewer": "./src/main.js"
+  }
+}
+```
+Then `npm link` to make `md-viewer` available globally.
+
+## Design Guidelines
+- **Minimal chrome** — No menu bar clutter, just the editor and preview
+- **Fast startup** — Should open in <1 second
+- **Single instance** — If already open with same file, focus existing window instead of opening new one
+- **Window title** — Show filename: `notes.md — MD Viewer`
+- **Remember window position/size** between sessions
+
+## Bonus (Nice to Have)
+- Outline/TOC sidebar (toggle with Ctrl+Shift+O)
+- Word count in status bar
+- Export to HTML or PDF
+- Vim keybindings toggle
+- Multiple file tabs
