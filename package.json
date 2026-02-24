@@ -1,0 +1,46 @@
+{
+  "name": "md-viewer",
+  "version": "0.1.0",
+  "description": "Local markdown viewer/editor with live preview",
+  "type": "module",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "markdown",
+    "editor",
+    "viewer",
+    "electron"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@vitejs/plugin-react": "^5.1.4",
+    "electron": "^40.6.0",
+    "electron-builder": "^26.8.1",
+    "electron-vite": "^5.0.0",
+    "jsdom": "^28.1.0",
+    "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "@codemirror/lang-markdown": "^6.5.0",
+    "@codemirror/language": "^6.12.1",
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "@tailwindcss/vite": "^4.2.1",
+    "clsx": "^2.1.1",
+    "codemirror": "^6.0.2",
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^14.1.1",
+    "motion": "^12.34.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.2.1"
+  }
+}
