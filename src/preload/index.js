@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('api', {
   getFilePath: () => ipcRenderer.invoke('get-file-path'),
   readFile: () => ipcRenderer.invoke('read-file'),
   writeFile: (content) => ipcRenderer.invoke('write-file', content),
+  openFile: () => ipcRenderer.invoke('open-file'),
   onFileChanged: (callback) => {
     const handler = (_event, content) => callback(content)
     ipcRenderer.on('file-changed', handler)

@@ -1,7 +1,7 @@
 // ABOUTME: Electron main process entry point. Creates the browser window
 // ABOUTME: and manages application lifecycle, file I/O, and IPC.
 
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join, resolve, basename } from 'path'
 import { watch } from 'fs'
 import { readFileContent, writeFileContent } from './fileOps.js'
@@ -65,14 +65,40 @@ function registerIpcHandlers() {
     if (!filePath) return
     await writeFileContent(filePath, content)
   })
+
+  ipcMain.handle('open-file', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openFile'],
+      filters: [
+        { name: 'Markdown', extensions: ['md', 'markdown', 'txt'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    })
+
+    if (result.canceled || result.filePaths.length === 0) return null
+
+    filePath = result.filePaths[0]
+    const content = await readFileContent(filePath)
+    updateWindowTitle()
+    startFileWatcher()
+
+    return { filePath, content }
+  })
 }
 
+let fileWatcher = null
+
 function startFileWatcher() {
+  if (fileWatcher) {
+    fileWatcher.close()
+    fileWatcher = null
+  }
+
   if (!filePath) return
 
   let debounceTimer = null
 
-  watch(filePath, (eventType) => {
+  fileWatcher = watch(filePath, (eventType) => {
     if (eventType !== 'change') return
 
     // Debounce to avoid rapid-fire events
@@ -88,6 +114,13 @@ function startFileWatcher() {
       }
     }, 100)
   })
+}
+
+function updateWindowTitle() {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    const title = filePath ? `${basename(filePath)} — MD Viewer` : 'MD Viewer'
+    mainWindow.setTitle(title)
+  }
 }
 
 const gotTheLock = app.requestSingleInstanceLock()

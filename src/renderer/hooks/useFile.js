@@ -6,20 +6,20 @@ import { useDebounce } from './useDebounce'
 
 export function useFile() {
   const [content, setContent] = useState('')
-  const [filename, setFilename] = useState('untitled.md')
+  const [filename, setFilename] = useState(null)
   const [dirty, setDirty] = useState(false)
   const lastSavedRef = useRef('')
 
   const saveToFile = useCallback(async (text) => {
-    if (!window.api) return
+    if (!window.api || !filename) return
     await window.api.writeFile(text)
     lastSavedRef.current = text
     setDirty(false)
-  }, [])
+  }, [filename])
 
   const { trigger: debouncedSave, flush: flushSave } = useDebounce(saveToFile, 500)
 
-  // Load file on mount
+  // Load file on mount if one was passed via CLI
   useEffect(() => {
     async function loadFile() {
       if (!window.api) return
@@ -66,11 +66,26 @@ export function useFile() {
     }
   }, [flushSave, dirty, content, saveToFile])
 
+  const openFile = useCallback(async () => {
+    if (!window.api) return
+
+    const result = await window.api.openFile()
+    if (!result) return
+
+    const name = result.filePath.split(/[/\\]/).pop()
+    setFilename(name)
+    setContent(result.content)
+    lastSavedRef.current = result.content
+    setDirty(false)
+  }, [])
+
   return {
     content,
     filename,
+    hasFile: filename !== null,
     dirty,
     handleChange,
-    forceSave
+    forceSave,
+    openFile
   }
 }
