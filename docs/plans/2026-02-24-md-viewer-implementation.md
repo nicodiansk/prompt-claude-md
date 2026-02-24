@@ -48,6 +48,13 @@
 | 27 | Add CLI launcher script | Done | `68e9800` |
 | 28 | Add single instance lock | Done | `dc52123` |
 | 29 | Phase 3 verification and merge to develop | Done | `46a97da` |
+| 30 | Create feature branch | Done | — |
+| 31 | Add Ctrl+S force save | Done | `a95c0f9` |
+| 32 | Add Ctrl+Shift+P mode toggle | Done | `88f34cc` |
+| 33 | Add scroll sync between editor and preview | Done | `4467f9c` |
+| 34 | Add window state persistence | Done | `fea7ffe` |
+| 35 | Add dirty indicator test for status bar | Done | `0e20553` |
+| 36 | Phase 4 verification and merge to develop | Done | `2cf7961` |
 
 **Notes:**
 - npm `script-shell` set to Git Bash globally (`~/.npmrc`) to fix nvm4w symlink issues on Windows
