@@ -61,4 +61,26 @@ describe('renderMarkdown', () => {
     expect(html).not.toContain('katex')
     expect(html).toContain('<p>Just a normal paragraph.</p>')
   })
+
+  it('renders mermaid blocks as diagram containers, not code blocks', () => {
+    const md = '```mermaid\ngraph TD\nA-->B\n```'
+    const html = renderMarkdown(md)
+    expect(html).toContain('mermaid-diagram')
+    expect(html).toContain('graph TD')
+    expect(html).not.toContain('<code')
+  })
+
+  it('preserves mermaid diagram definition in container', () => {
+    const md = '```mermaid\nsequenceDiagram\nAlice->>Bob: Hello\n```'
+    const html = renderMarkdown(md)
+    expect(html).toContain('sequenceDiagram')
+    expect(html).toContain('Alice')
+  })
+
+  it('still syntax-highlights non-mermaid code blocks', () => {
+    const md = '```mermaid\ngraph TD\nA-->B\n```\n\n```js\nconst x = 1\n```'
+    const html = renderMarkdown(md)
+    expect(html).toContain('mermaid-diagram')
+    expect(html).toContain('hljs')
+  })
 })
