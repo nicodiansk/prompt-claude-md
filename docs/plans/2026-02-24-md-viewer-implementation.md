@@ -15,6 +15,35 @@
 
 ---
 
+## Progress
+
+| Task | Description | Status | Commit |
+|------|-------------|--------|--------|
+| 1 | Initialize project and install dependencies | Done | `30450e1` |
+| 2 | Configure electron-vite | Done | `f032cbd` |
+| 3 | Set up Tailwind CSS v4 | Done | `0c614f4` |
+| 4 | Set up Magic UI utilities | Done | `fbb6a07` |
+| 5 | Configure Vitest | Done | `2bd79a5` |
+| 6 | Create Electron main process skeleton | Done | `252110b` |
+| 7 | Create preload script | Done | `95f939f` |
+| 8 | Create React entry point | Done | `ce8fde2` |
+| 9 | Create useMarkdown hook (TDD) | Done | `19f4792` |
+| 10 | Create Preview component (TDD) | Done | `70f0644` |
+| 11 | Create Editor component (TDD) | Done | `0886f02` |
+| 12 | Create StatusBar component (TDD) | Done | `62c2271` |
+| 13 | Wire up live editor-to-preview rendering | Done | `d06351b` |
+| 14 | Add preview styles and code highlighting | Done | `44db9af` |
+| 15 | Add Magic UI elements to shell | Done | `169a86a` |
+| 16 | Phase 1 verification and merge to develop | Done | `efeb306` |
+
+**Notes:**
+- npm `script-shell` set to Git Bash globally (`~/.npmrc`) to fix nvm4w symlink issues on Windows
+- Node v20.19.6 — @electron/rebuild warns about wanting Node >= 22.12.0 (non-blocking)
+- Using subagent-driven development for task execution
+- electron-vite v5 removed `is` from `electron-vite/utils` — use `process.env.NODE_ENV` instead
+
+---
+
 ## Branch Strategy
 
 Each phase maps to a feature branch off `develop`. Merge to `develop` when phase is complete.
