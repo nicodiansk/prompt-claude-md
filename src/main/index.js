@@ -3,7 +3,8 @@
 
 import { app, BrowserWindow } from 'electron'
 import { join } from 'path'
-import { is } from 'electron-vite/utils'
+
+const isDev = process.env.NODE_ENV === 'development'
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -17,7 +18,7 @@ function createWindow() {
     }
   })
 
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+  if (isDev && process.env['ELECTRON_RENDERER_URL']) {
     win.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     win.loadFile(join(__dirname, '../renderer/index.html'))
