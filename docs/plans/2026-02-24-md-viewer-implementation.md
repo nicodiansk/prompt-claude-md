@@ -59,7 +59,7 @@
 | 38 | Add KaTeX math rendering (TDD) | Done | `04fe359` |
 | 39 | CSP update for mermaid | Done | `7035dd2` |
 | 40 | Fix mermaid rendering on React re-render | Done | `4aa0cb4` |
-| 41 | Phase 5 verification and merge to develop | In Progress | — |
+| 41 | Phase 5 verification and merge to develop | Done | `21ea926` |
 
 **Notes:**
 - npm `script-shell` set to Git Bash globally (`~/.npmrc`) to fix nvm4w symlink issues on Windows
