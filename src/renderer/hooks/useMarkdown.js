@@ -4,6 +4,8 @@
 import markdownit from 'markdown-it'
 import hljs from 'highlight.js'
 import taskLists from 'markdown-it-task-lists'
+import texmath from 'markdown-it-texmath'
+import katex from 'katex'
 
 const md = markdownit({
   html: true,
@@ -23,6 +25,17 @@ const md = markdownit({
 
 md.enable(['table', 'strikethrough'])
 md.use(taskLists)
+md.use(texmath, { engine: katex, delimiters: 'dollars' })
+
+// Intercept mermaid fenced blocks and emit diagram containers instead of code blocks
+const defaultFence = md.renderer.rules.fence
+md.renderer.rules.fence = function (tokens, idx, options, env, self) {
+  const token = tokens[idx]
+  if (token.info.trim() === 'mermaid') {
+    return '<div class="mermaid-diagram">' + md.utils.escapeHtml(token.content) + '</div>\n'
+  }
+  return defaultFence(tokens, idx, options, env, self)
+}
 
 export function renderMarkdown(source) {
   if (!source) return ''

@@ -43,4 +43,44 @@ describe('renderMarkdown', () => {
   it('returns empty string for empty input', () => {
     expect(renderMarkdown('')).toBe('')
   })
+
+  it('renders inline math with KaTeX', () => {
+    const html = renderMarkdown('The equation $E=mc^2$ is famous.')
+    expect(html).toContain('katex')
+    expect(html).not.toContain('$E=mc^2$')
+  })
+
+  it('renders display math with KaTeX', () => {
+    const html = renderMarkdown('$$\\sum_{i=1}^n i = \\frac{n(n+1)}{2}$$')
+    expect(html).toContain('katex')
+    expect(html).toContain('display')
+  })
+
+  it('does not affect text without math delimiters', () => {
+    const html = renderMarkdown('Just a normal paragraph.')
+    expect(html).not.toContain('katex')
+    expect(html).toContain('<p>Just a normal paragraph.</p>')
+  })
+
+  it('renders mermaid blocks as diagram containers, not code blocks', () => {
+    const md = '```mermaid\ngraph TD\nA-->B\n```'
+    const html = renderMarkdown(md)
+    expect(html).toContain('mermaid-diagram')
+    expect(html).toContain('graph TD')
+    expect(html).not.toContain('<code')
+  })
+
+  it('preserves mermaid diagram definition in container', () => {
+    const md = '```mermaid\nsequenceDiagram\nAlice->>Bob: Hello\n```'
+    const html = renderMarkdown(md)
+    expect(html).toContain('sequenceDiagram')
+    expect(html).toContain('Alice')
+  })
+
+  it('still syntax-highlights non-mermaid code blocks', () => {
+    const md = '```mermaid\ngraph TD\nA-->B\n```\n\n```js\nconst x = 1\n```'
+    const html = renderMarkdown(md)
+    expect(html).toContain('mermaid-diagram')
+    expect(html).toContain('hljs')
+  })
 })
