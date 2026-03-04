@@ -2,15 +2,21 @@
 // ABOUTME: and manages application lifecycle, file I/O, and IPC.
 
 import { app, BrowserWindow, ipcMain, dialog } from 'electron'
-import { join, resolve, basename } from 'path'
+import { join, resolve, basename, dirname } from 'path'
 import { watch } from 'fs'
+import { homedir } from 'os'
 import { readFileContent, writeFileContent } from './fileOps.js'
+import { readDirTree } from './dirTree.js'
+import { detectProjectRoot } from './projectRoot.js'
+import { getProjects, saveProject } from './projectHistory.js'
 import windowStateKeeper from 'electron-window-state'
 
 const isDev = process.env.NODE_ENV === 'development'
 
 let mainWindow = null
 let filePath = null
+let projectRoot = null
+let projectsFilePath = null
 
 function parseFilePath() {
   // In dev, CLI args include electron path. In production, args start with app path.
@@ -84,6 +90,51 @@ function registerIpcHandlers() {
 
     return { filePath, content }
   })
+
+  ipcMain.handle('get-project-info', () => ({
+    projectRoot,
+    globalDir: join(homedir(), '.claude')
+  }))
+
+  ipcMain.handle('read-dir-tree', async (_event, dirPath) => {
+    try {
+      return await readDirTree(dirPath)
+    } catch {
+      return []
+    }
+  })
+
+  ipcMain.handle('get-projects', async () => {
+    if (!projectsFilePath) return []
+    return getProjects(projectsFilePath)
+  })
+
+  ipcMain.handle('save-project', async (_event, projectPath) => {
+    if (!projectsFilePath) return
+    const projects = await saveProject(projectsFilePath, projectPath)
+    projectRoot = projectPath
+    return projects
+  })
+
+  ipcMain.handle('browse-for-project', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory']
+    })
+    if (result.canceled || result.filePaths.length === 0) return null
+    return result.filePaths[0]
+  })
+
+  ipcMain.handle('read-file-at', async (_event, path) => {
+    try {
+      return await readFileContent(path)
+    } catch {
+      return ''
+    }
+  })
+
+  ipcMain.handle('write-file-at', async (_event, path, content) => {
+    await writeFileContent(path, content)
+  })
 }
 
 let fileWatcher = null
@@ -135,8 +186,16 @@ if (!gotTheLock) {
     }
   })
 
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
     filePath = parseFilePath()
+    projectsFilePath = join(app.getPath('userData'), 'projects.json')
+
+    const startPath = filePath ? dirname(filePath) : process.cwd()
+    projectRoot = await detectProjectRoot(startPath)
+    if (projectRoot) {
+      await saveProject(projectsFilePath, projectRoot)
+    }
+
     registerIpcHandlers()
     createWindow()
     startFileWatcher()
