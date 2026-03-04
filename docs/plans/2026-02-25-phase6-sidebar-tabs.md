@@ -18,21 +18,21 @@
 
 | Task | Description | Status | Commit |
 |------|-------------|--------|--------|
-| 1 | Create feature branch | — | — |
-| 2 | Add dirTree.js (TDD) | — | — |
-| 3 | Add projectRoot.js (TDD) | — | — |
-| 4 | Add projectHistory.js (TDD) | — | — |
-| 5 | Wire new IPC handlers in main | — | — |
-| 6 | Expand preload API | — | — |
-| 7 | Build useFileManager hook (TDD) | — | — |
-| 8 | Build useProjectTree hook (TDD) | — | — |
-| 9 | Build FileTreeNode component (TDD) | — | — |
-| 10 | Build FileTree component (TDD) | — | — |
-| 11 | Build ProjectSwitcher component (TDD) | — | — |
-| 12 | Build Sidebar component | — | — |
-| 13 | Build TabBar component (TDD) | — | — |
-| 14 | Refactor App.jsx | — | — |
-| 15 | Phase 6a verification and merge | — | — |
+| 1 | Create feature branch | DONE | — |
+| 2 | Add dirTree.js (TDD) | DONE | bd2826c |
+| 3 | Add projectRoot.js (TDD) | DONE | 5634a98 |
+| 4 | Add projectHistory.js (TDD) | DONE | 550e540 |
+| 5 | Wire new IPC handlers in main | DONE | 70daf03 |
+| 6 | Expand preload API | DONE | 7413d32 |
+| 7 | Build useFileManager hook (TDD) | DONE | 689626c |
+| 8 | Build useProjectTree hook (TDD) | DONE | cf044db |
+| 9 | Build FileTreeNode component (TDD) | DONE | 4d7709c |
+| 10 | Build FileTree component (TDD) | DONE | adc6540 |
+| 11 | Build ProjectSwitcher component (TDD) | DONE | 25c6f8a |
+| 12 | Build Sidebar component | DONE | 0e89ed4 |
+| 13 | Build TabBar component (TDD) | DONE | f86c696 |
+| 14 | Refactor App.jsx | DONE | 8625ed2 |
+| 15 | Phase 6a verification and merge | DONE | — |
 
 ---
 
