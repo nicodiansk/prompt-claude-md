@@ -44,7 +44,11 @@ export default function Editor({ content, onChange }) {
         autocompletion({
           override: [fileCompletion],
           activateOnTyping: true
-        })
+        }),
+        // Markdown mode auto-pairs * and _ which breaks bold/italic typing
+        EditorState.languageData.of(() => [{
+          closeBrackets: { brackets: ['(', '[', '{', "'", '"', '`'] }
+        }])
       ]
     })
 

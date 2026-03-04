@@ -34,8 +34,9 @@ if (!existsSync(mainPath)) {
 const electronArgs = [mainPath, ...flags, resolvedPath]
 
 if (isEditorMode) {
-  // Editor mode: block until Electron exits so Claude Code knows editing is done
-  const child = spawn(electron, electronArgs, { stdio: 'inherit' })
+  // Editor mode: block until Electron exits, but don't inherit stdio to avoid
+  // corrupting the parent terminal (Claude Code) when Electron quits
+  const child = spawn(electron, electronArgs, { stdio: 'ignore' })
   child.on('exit', (code) => process.exit(code ?? 0))
 } else {
   // Normal mode: detach so the terminal is freed
