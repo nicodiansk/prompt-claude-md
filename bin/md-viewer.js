@@ -13,13 +13,17 @@ import electron from 'electron'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const filePath = process.argv[2]
-if (!filePath) {
-  console.error('Usage: md-viewer <file.md>')
+const args = process.argv.slice(2)
+const isEditorMode = args.includes('--editor-mode')
+const flags = args.filter(arg => arg.startsWith('-'))
+const fileArg = args.find(arg => !arg.startsWith('-'))
+
+if (!fileArg) {
+  console.error('Usage: md-viewer [--editor-mode] <file>')
   process.exit(1)
 }
 
-const resolvedPath = resolve(filePath)
+const resolvedPath = resolve(fileArg)
 const mainPath = join(__dirname, '..', 'out', 'main', 'index.js')
 
 if (!existsSync(mainPath)) {
@@ -27,9 +31,17 @@ if (!existsSync(mainPath)) {
   process.exit(1)
 }
 
-const child = spawn(electron, [mainPath, resolvedPath], {
-  stdio: 'inherit',
-  detached: true
-})
+const electronArgs = [mainPath, ...flags, resolvedPath]
 
-child.unref()
+if (isEditorMode) {
+  // Editor mode: block until Electron exits so Claude Code knows editing is done
+  const child = spawn(electron, electronArgs, { stdio: 'inherit' })
+  child.on('exit', (code) => process.exit(code ?? 0))
+} else {
+  // Normal mode: detach so the terminal is freed
+  const child = spawn(electron, electronArgs, {
+    stdio: 'inherit',
+    detached: true
+  })
+  child.unref()
+}
