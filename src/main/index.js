@@ -23,8 +23,8 @@ let editorFilePath = null
 let originalEditorContent = null
 
 function parseCliArgs() {
-  // In dev, CLI args include electron path. In production, args start with app path.
-  const args = process.argv.slice(isDev ? 2 : 1)
+  // argv[0] = electron binary, argv[1] = main script/dir, argv[2+] = user args
+  const args = process.argv.slice(2)
   isEditorMode = args.includes('--editor-mode')
   const fileArg = args.find(arg => !arg.startsWith('-'))
   if (fileArg) {
