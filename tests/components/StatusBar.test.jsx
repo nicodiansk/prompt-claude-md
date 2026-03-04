@@ -40,4 +40,16 @@ describe('StatusBar', () => {
     render(<StatusBar filename="notes.md" wordCount={10} mode="edit" saveStatus={null} />)
     expect(screen.queryByText(/saved/i)).toBeNull()
   })
+
+  it('shows editor mode indicator when editorMode is true', () => {
+    render(<StatusBar filename="● Prompt" wordCount={10} mode="edit" editorMode={true} />)
+    expect(screen.getByText(/EDITOR MODE/)).toBeInTheDocument()
+    expect(screen.getByText(/Ctrl\+Enter to submit/)).toBeInTheDocument()
+    expect(screen.getByText(/Esc to cancel/)).toBeInTheDocument()
+  })
+
+  it('does not show editor mode indicator when editorMode is false', () => {
+    render(<StatusBar filename="test.md" wordCount={5} mode="edit" editorMode={false} />)
+    expect(screen.queryByText(/EDITOR MODE/)).not.toBeInTheDocument()
+  })
 })
