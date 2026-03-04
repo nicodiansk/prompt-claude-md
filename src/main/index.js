@@ -20,6 +20,7 @@ let projectRoot = null
 let projectsFilePath = null
 let isEditorMode = false
 let editorFilePath = null
+let originalEditorContent = null
 
 function parseCliArgs() {
   // In dev, CLI args include electron path. In production, args start with app path.
@@ -168,6 +169,25 @@ function registerIpcHandlers() {
       return []
     }
   })
+
+  ipcMain.handle('get-editor-mode', () => ({
+    isEditorMode,
+    filePath: editorFilePath
+  }))
+
+  ipcMain.handle('submit-editor', async (_event, content) => {
+    if (!isEditorMode || !editorFilePath) return
+    await writeFileContent(editorFilePath, content)
+    app.quit()
+  })
+
+  ipcMain.handle('cancel-editor', async () => {
+    if (!isEditorMode || !editorFilePath) return
+    if (originalEditorContent !== null) {
+      await writeFileContent(editorFilePath, originalEditorContent)
+    }
+    app.quit()
+  })
 }
 
 let fileWatcher = null
@@ -221,6 +241,10 @@ if (!gotTheLock) {
 
   app.whenReady().then(async () => {
     projectsFilePath = join(app.getPath('userData'), 'projects.json')
+
+    if (isEditorMode && editorFilePath) {
+      originalEditorContent = await readFileContent(editorFilePath)
+    }
 
     const startPath = filePath ? dirname(filePath) : process.cwd()
     projectRoot = await detectProjectRoot(startPath)
