@@ -18,40 +18,63 @@ let mainWindow = null
 let filePath = null
 let projectRoot = null
 let projectsFilePath = null
+let isEditorMode = false
+let editorFilePath = null
 
-function parseFilePath() {
+function parseCliArgs() {
   // In dev, CLI args include electron path. In production, args start with app path.
   const args = process.argv.slice(isDev ? 2 : 1)
+  isEditorMode = args.includes('--editor-mode')
   const fileArg = args.find(arg => !arg.startsWith('-'))
   if (fileArg) {
-    return resolve(fileArg)
+    const resolved = resolve(fileArg)
+    if (isEditorMode) {
+      editorFilePath = resolved
+    }
+    return resolved
   }
   return null
 }
 
+filePath = parseCliArgs()
+
 function createWindow() {
-  const title = filePath ? `${basename(filePath)} — MD Viewer` : 'MD Viewer'
+  if (isEditorMode) {
+    mainWindow = new BrowserWindow({
+      width: 600,
+      height: 800,
+      center: true,
+      title: 'Editing Prompt — MD Viewer',
+      autoHideMenuBar: true,
+      webPreferences: {
+        preload: join(__dirname, '../preload/index.js'),
+        contextIsolation: true,
+        nodeIntegration: false
+      }
+    })
+  } else {
+    const title = filePath ? `${basename(filePath)} — MD Viewer` : 'MD Viewer'
+    const windowState = windowStateKeeper({
+      defaultWidth: 1200,
+      defaultHeight: 800
+    })
 
-  const windowState = windowStateKeeper({
-    defaultWidth: 1200,
-    defaultHeight: 800
-  })
+    mainWindow = new BrowserWindow({
+      x: windowState.x,
+      y: windowState.y,
+      width: windowState.width,
+      height: windowState.height,
+      title,
+      autoHideMenuBar: true,
+      webPreferences: {
+        preload: join(__dirname, '../preload/index.js'),
+        contextIsolation: true,
+        nodeIntegration: false
+      }
+    })
 
-  mainWindow = new BrowserWindow({
-    x: windowState.x,
-    y: windowState.y,
-    width: windowState.width,
-    height: windowState.height,
-    title,
-    autoHideMenuBar: true,
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      contextIsolation: true,
-      nodeIntegration: false
-    }
-  })
-
-  windowState.manage(mainWindow)
+    windowState.manage(mainWindow)
+  }
 
   if (isDev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
@@ -184,7 +207,7 @@ function updateWindowTitle() {
   }
 }
 
-const gotTheLock = app.requestSingleInstanceLock()
+const gotTheLock = isEditorMode ? true : app.requestSingleInstanceLock()
 
 if (!gotTheLock) {
   app.quit()
@@ -197,7 +220,6 @@ if (!gotTheLock) {
   })
 
   app.whenReady().then(async () => {
-    filePath = parseFilePath()
     projectsFilePath = join(app.getPath('userData'), 'projects.json')
 
     const startPath = filePath ? dirname(filePath) : process.cwd()
