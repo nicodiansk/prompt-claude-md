@@ -10,6 +10,7 @@ import TabBar from './components/TabBar'
 import { useFileManager } from './hooks/useFileManager'
 import { useProjectTree } from './hooks/useProjectTree'
 import { useScrollSync } from './hooks/useScrollSync'
+import { useEditorMode } from './hooks/useEditorMode'
 
 function countWords(text) {
   if (!text.trim()) return 0
@@ -29,11 +30,17 @@ export default function App() {
   const { tree: globalTree } = useProjectTree(globalDir)
   const { tree: projectTree } = useProjectTree(currentProject)
 
+  const { isEditorMode, filePath: editorFilePath, submit, cancel } = useEditorMode()
+
   useScrollSync(editorRef, previewRef)
 
   useEffect(() => {
     async function init() {
       if (!window.api) return
+      if (isEditorMode && editorFilePath) {
+        openTab(editorFilePath)
+        return
+      }
       const info = await window.api.getProjectInfo()
       setCurrentProject(info.projectRoot)
       setGlobalDir(info.globalDir)
@@ -43,7 +50,7 @@ export default function App() {
       if (fp) openTab(fp)
     }
     init()
-  }, [openTab])
+  }, [openTab, isEditorMode, editorFilePath])
 
   useEffect(() => {
     if (!window.api) return
@@ -56,6 +63,16 @@ export default function App() {
 
   useEffect(() => {
     function handleKeyDown(e) {
+      if (isEditorMode && e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault()
+        if (activeTab) submit(activeTab.content)
+        return
+      }
+      if (isEditorMode && e.key === 'Escape') {
+        e.preventDefault()
+        cancel()
+        return
+      }
       if (e.ctrlKey && !e.shiftKey && e.key === 's') {
         e.preventDefault()
         if (activeTabId) forceSave(activeTabId)
@@ -75,7 +92,7 @@ export default function App() {
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [activeTabId, forceSave])
+  }, [activeTabId, forceSave, isEditorMode, submit, cancel, activeTab])
 
   async function handleOpenFile() {
     if (!window.api) return
@@ -97,14 +114,14 @@ export default function App() {
     if (path) handleProjectSelect(path)
   }
 
-  const statusFilename = activeTab
-    ? (activeTab.dirty ? `${activeTab.filename} *` : activeTab.filename)
-    : 'No file open'
+  const statusFilename = isEditorMode
+    ? '● Prompt'
+    : (activeTab ? (activeTab.dirty ? `${activeTab.filename} *` : activeTab.filename) : 'No file open')
 
   return (
     <div className="flex flex-col h-screen bg-background text-text">
       <div className="flex-1 flex overflow-hidden">
-        {sidebarVisible && (
+        {sidebarVisible && !isEditorMode && (
           <div className="w-[220px] shrink-0">
             <Sidebar
               currentProject={currentProject}
@@ -119,12 +136,14 @@ export default function App() {
           </div>
         )}
         <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-          <TabBar
-            tabs={tabs}
-            activeTabId={activeTabId}
-            onTabClick={setActiveTab}
-            onTabClose={closeTab}
-          />
+          {!isEditorMode && (
+            <TabBar
+              tabs={tabs}
+              activeTabId={activeTabId}
+              onTabClick={setActiveTab}
+              onTabClose={closeTab}
+            />
+          )}
           {activeTab ? (
             <div className="flex-1 flex overflow-hidden">
               {mode === 'edit' && (
@@ -156,6 +175,7 @@ export default function App() {
         filename={statusFilename}
         wordCount={activeTab ? countWords(activeTab.content) : 0}
         mode={mode}
+        editorMode={isEditorMode}
       />
     </div>
   )
