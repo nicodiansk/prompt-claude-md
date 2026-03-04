@@ -7,6 +7,7 @@ import { watch } from 'fs'
 import { homedir } from 'os'
 import { readFileContent, writeFileContent } from './fileOps.js'
 import { readDirTree } from './dirTree.js'
+import { listProjectFiles } from './listProjectFiles.js'
 import { detectProjectRoot } from './projectRoot.js'
 import { getProjects, saveProject } from './projectHistory.js'
 import windowStateKeeper from 'electron-window-state'
@@ -134,6 +135,15 @@ function registerIpcHandlers() {
 
   ipcMain.handle('write-file-at', async (_event, path, content) => {
     await writeFileContent(path, content)
+  })
+
+  ipcMain.handle('list-project-files', async () => {
+    if (!projectRoot) return []
+    try {
+      return await listProjectFiles(projectRoot)
+    } catch {
+      return []
+    }
   })
 }
 

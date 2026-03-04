@@ -25,4 +25,7 @@ contextBridge.exposeInMainWorld('api', {
   getProjects: () => ipcRenderer.invoke('get-projects'),
   saveProject: (projectPath) => ipcRenderer.invoke('save-project', projectPath),
   browseForProject: () => ipcRenderer.invoke('browse-for-project'),
+
+  // File listing for @ autocomplete
+  listProjectFiles: () => ipcRenderer.invoke('list-project-files'),
 })
