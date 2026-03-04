@@ -28,4 +28,9 @@ contextBridge.exposeInMainWorld('api', {
 
   // File listing for @ autocomplete
   listProjectFiles: () => ipcRenderer.invoke('list-project-files'),
+
+  // Editor mode
+  getEditorMode: () => ipcRenderer.invoke('get-editor-mode'),
+  submitEditor: (content) => ipcRenderer.invoke('submit-editor', content),
+  cancelEditor: () => ipcRenderer.invoke('cancel-editor'),
 })
