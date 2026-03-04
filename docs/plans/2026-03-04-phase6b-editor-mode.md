@@ -14,17 +14,17 @@
 
 | Task | Description | Status | Commit |
 |------|-------------|--------|--------|
-| 1 | `listProjectFiles` main process module | | |
-| 2 | `list-project-files` IPC + preload | | |
-| 3 | `@` autocomplete completion source | | |
-| 4 | Wire autocomplete into Editor | | |
-| 5 | Editor mode flag detection + window | | |
-| 6 | Editor mode IPC handlers (submit/cancel) | | |
-| 7 | Editor mode preload exposures | | |
-| 8 | `useEditorMode` hook | | |
-| 9 | App.jsx editor mode layout | | |
-| 10 | StatusBar editor mode indicator | | |
-| 11 | Full integration verification | | |
+| 1 | `listProjectFiles` main process module | DONE | 00c71b5 |
+| 2 | `list-project-files` IPC + preload | DONE | c0eba3e |
+| 3 | `@` autocomplete completion source | DONE | 5e9ebd3 |
+| 4 | Wire autocomplete into Editor | DONE | 1e0e8da |
+| 5 | Editor mode flag detection + window | DONE | f02ace1 |
+| 6 | Editor mode IPC handlers (submit/cancel) | DONE | 33e1d1e |
+| 7 | Editor mode preload exposures | DONE | 9f146c6 |
+| 8 | `useEditorMode` hook | DONE | 7e0a4d7 |
+| 9 | App.jsx editor mode layout | DONE | 748ae31 |
+| 10 | StatusBar editor mode indicator | DONE | 02b843d |
+| 11 | Full integration verification | DONE | — |
 
 ---
 
