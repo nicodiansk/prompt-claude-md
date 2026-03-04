@@ -6,6 +6,12 @@ import { EditorView, basicSetup } from 'codemirror'
 import { markdown } from '@codemirror/lang-markdown'
 import { oneDark } from '@codemirror/theme-one-dark'
 import { EditorState } from '@codemirror/state'
+import { autocompletion } from '@codemirror/autocomplete'
+import { createFileCompletionSource } from '../editor/fileCompletionSource'
+
+const fileCompletion = createFileCompletionSource(
+  () => window.api?.listProjectFiles() ?? Promise.resolve([])
+)
 
 export default function Editor({ content, onChange }) {
   const containerRef = useRef(null)
@@ -34,7 +40,11 @@ export default function Editor({ content, onChange }) {
         oneDark,
         updateListener,
         EditorView.lineWrapping,
-        EditorState.tabSize.of(2)
+        EditorState.tabSize.of(2),
+        autocompletion({
+          override: [fileCompletion],
+          activateOnTyping: true
+        })
       ]
     })
 
